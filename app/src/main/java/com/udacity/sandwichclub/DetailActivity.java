@@ -12,6 +12,8 @@ import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
+import java.util.List;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
@@ -27,7 +29,10 @@ public class DetailActivity extends AppCompatActivity {
             closeOnError();
         }
 
-        int position = intent.getIntExtra(EXTRA_POSITION, DEFAULT_POSITION);
+        int position = 0;
+        if (intent != null) {
+            position = intent.getIntExtra(EXTRA_POSITION, DEFAULT_POSITION);
+        }
         if (position == DEFAULT_POSITION) {
             // EXTRA_POSITION not found in intent
             closeOnError();
@@ -42,10 +47,10 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        populateUI(sandwich);
         Picasso.with(this)
                 .load(sandwich.getImage())
                 .into((ImageView) findViewById(R.id.image_iv));
+        populateUI(sandwich);
 
         setTitle(sandwich.getMainName());
     }
@@ -56,9 +61,13 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI(Sandwich sandwich) {
-        ((TextView)findViewById(R.id.description_tv)).setText(sandwich.getDescription());
-        ((TextView)findViewById(R.id.ingredients_tv)).setText(TextUtils.join(", ", sandwich.getIngredients()));
-        ((TextView)findViewById(R.id.origin_tv)).setText(sandwich.getPlaceOfOrigin());
-        ((TextView)findViewById(R.id.also_known_tv)).setText(TextUtils.join(", ", sandwich.getAlsoKnownAs()));
+        ((TextView) findViewById(R.id.description_tv)).setText(sandwich.getDescription());
+        ((TextView) findViewById(R.id.ingredients_tv)).setText(toText(sandwich.getIngredients()));
+        ((TextView) findViewById(R.id.origin_tv)).setText(sandwich.getPlaceOfOrigin());
+        ((TextView) findViewById(R.id.also_known_tv)).setText(toText(sandwich.getAlsoKnownAs()));
+    }
+
+    private String toText(List<String> list) {
+        return TextUtils.join(", ", list);
     }
 }
